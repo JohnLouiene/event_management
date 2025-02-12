@@ -112,19 +112,27 @@ const Dashboard = () => {
       </section>
 
       {/* About Us Section */}
-      <section className="py-16 px-10 bg-white text-black">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8 px-8 py-4">
-        <div>
-        <h2 className="text-3xl font-extrabold text-black">         
-          ABOUT US</h2>
-        <h3 className="text-5xl text-purple-600 font-extrabold mt-2">ILOVATION</h3>
-        </div>
-        <p className="mt-4 text-gray-600 max-w-2xl">
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-          eiusmod tempor incididunt ut labore et dolore magna aliqua.
-        </p>
-        </div>
-      </section>
+<section className="py-16 px-24 bg-white text-black">
+  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8 px-8 py-4">
+    <div className="relative">
+      <Image 
+        src="/images/icon_quotation_marks.png" 
+        alt="Quotation Marks" 
+        width={50} 
+        height={50} 
+        className="absolute -top-4 -left-8 md:-left-12"
+      />
+      <h2 className="text-3xl font-extrabold text-black ml-8">ABOUT US</h2>
+      <h3 className="text-5xl text-purple-600 font-extrabold mt-2 ml-8">ILOVATION</h3>
+    </div>
+    <p className="mt-4 text-gray-600 max-w-2xl">
+      Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+      eiusmod tempor incididunt ut labore et dolore magna aliqua.
+    </p>
+  </div>
+</section>
+
+
     </div>
   );
 };

@@ -13,102 +13,83 @@ const SignIn = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Placeholder logic for form submission
-    console.log("Host Name:", hostName, "Email:", email, "Password:", password);
+    console.log("Form submitted:", { hostName, email, password });
   };
 
   return (
     <div className="flex h-screen w-screen">
-      {/* Left side - Login Form */}
-      <div className="w-3/4 flex items-center justify-center bg-white p-8">
-        <div className="w-[400px] space-y-8">
+
+      {/* Left side - Sign In Form */}
+      <div className="w-full md:w-3/5 flex items-center justify-center bg-white px-16 py-8">
+        <div className="w-full max-w-2xl space-y-10">
           <div className="space-y-2 text-center">
-            <h1 className="text-2xl font-bold text-purple-600">ILOVATION</h1>
-            <h2 className="text-2xl font-semibold">Sign In</h2>
+            <h1 className="text-4xl font-bold text-violet-600">ILOVATION</h1>
+            <h2 className="text-3xl font-semibold text-gray-900">Sign In</h2>
           </div>
           
-          <form onSubmit={handleSubmit} className="space-y-6">
+          <form onSubmit={handleSubmit} className="space-y-8">
             {error && <p className="text-red-500 text-sm">{error}</p>}
             
             <div className="space-y-2">
-              <label className="text-sm text-gray-600" htmlFor="hostName">
-                Host Name
-              </label>
+              <label className="text-sm font-medium text-gray-700">EMAIL</label>
               <Input
-                id="hostName"
-                placeholder="Name"
-                type="text"
-                value={hostName}
-                onChange={(e) => setHostName(e.target.value)}
-                required
-                className="w-full"
-              />
-            </div>
-            
-            <div className="space-y-2">
-              <label className="text-sm text-gray-600" htmlFor="email">
-                YOUR EMAIL
-              </label>
-              <Input
-                id="email"
-                placeholder="Enter your email"
+                placeholder="Enter your e-mail"
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
+                className="w-full rounded-lg border-gray-200 h-12"
                 required
-                className="w-full"
               />
             </div>
             
             <div className="space-y-2">
-              <div className="flex justify-between">
-                <label className="text-sm text-gray-600" htmlFor="password">
-                  PASSWORD
-                </label>
-                <a 
-                  href="#" 
-                  className="text-sm text-gray-500 hover:text-purple-600"
+              <div className="flex justify-between items-center">
+                <label className="text-sm font-medium text-gray-700">PASSWORD</label>
+                <Link 
+                  href="/forgot-password" 
+                  className="text-sm text-violet-600 hover:text-violet-700"
                 >
                   Forgot your password?
-                </a>
+                </Link>
               </div>
               <Input
-                id="password"
                 placeholder="Enter your password"
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                className="w-full rounded-lg border-gray-200 h-12"
                 required
-                className="w-full"
               />
             </div>
-
-            <p className="mt-4 text-center text-sm">
-              Don't have an account yet? <Link href="/sign-up" className="text-blue-500">Sign Up</Link>
-            </p>
-
+            
             <Button 
               type="submit" 
-              className="w-full bg-purple-600 hover:bg-purple-700 text-white"
+              className="w-full bg-violet-600 hover:bg-violet-700 text-white py-6 rounded-lg text-lg font-medium"
             >
-              Sign in
+              Sign In
             </Button>
-          </form>
+            
+            <p className="text-center text-sm text-gray-600">
+              Don't have an account yet?{" "}
+              <Link href="/sign-up" className="text-violet-600 hover:text-violet-700 font-medium">
+                Sign Up
+              </Link>
+            </p>
+          </form>         
         </div>
       </div>
-      
       {/* Right side - Image */}
-      <div className="w-1/2 relative">
-        <img
-          src="/images/login.png"
-          alt="Login background"
-          className="h-full w-full object-cover"
-        />
-        <div className="absolute inset-0 bg-black/30">
+      <div className="hidden md:block w-2/5 relative">
+        <div className="absolute inset-0 bg-black/60">
           <div className="h-full flex items-center justify-center">
-            <h1 className="text-4xl font-bold text-white">ILOVATION</h1>
+            <h1 className="text-6xl font-bold text-white tracking-wider">ILOVATION</h1>
           </div>
         </div>
+        <img
+          src="/images/login.png"
+          alt="Sign In background"
+          className="h-full w-full object-cover"
+        />
       </div>
     </div>
   );
