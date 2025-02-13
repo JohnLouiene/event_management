@@ -1,24 +1,54 @@
+// app/sign-in/page.tsx
 "use client";
 
 import React, { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 const SignIn = () => {
-  const [hostName, setHostName] = useState("");
+  const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Form submitted:", { hostName, email, password });
+    setError("");
+    setIsLoading(true);
+
+    try {
+      const res = await fetch('/api/signin', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.error || 'Failed to sign in');
+      }
+
+      // Store user data in localStorage or state management solution
+      localStorage.setItem('user', JSON.stringify(data.user));
+      
+      // Redirect to dashboard
+      router.push('/dashboard');
+      
+    } catch (err: any) {
+      setError(err.message);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
     <div className="flex h-screen w-screen">
-
       {/* Left side - Sign In Form */}
       <div className="w-full md:w-3/5 flex items-center justify-center bg-white px-16 py-8">
         <div className="w-full max-w-2xl space-y-10">
@@ -28,7 +58,9 @@ const SignIn = () => {
           </div>
           
           <form onSubmit={handleSubmit} className="space-y-8">
-            {error && <p className="text-red-500 text-sm">{error}</p>}
+            {error && (
+              <p className="text-red-500 text-sm bg-red-50 p-3 rounded">{error}</p>
+            )}
             
             <div className="space-y-2">
               <label className="text-sm font-medium text-gray-700">EMAIL</label>
@@ -65,8 +97,9 @@ const SignIn = () => {
             <Button 
               type="submit" 
               className="w-full bg-violet-600 hover:bg-violet-700 text-white py-6 rounded-lg text-lg font-medium"
+              disabled={isLoading}
             >
-              Sign In
+              {isLoading ? "Signing in..." : "Sign In"}
             </Button>
             
             <p className="text-center text-sm text-gray-600">
@@ -78,6 +111,7 @@ const SignIn = () => {
           </form>         
         </div>
       </div>
+
       {/* Right side - Image */}
       <div className="hidden md:block w-2/5 relative">
         <div className="absolute inset-0 bg-black/60">

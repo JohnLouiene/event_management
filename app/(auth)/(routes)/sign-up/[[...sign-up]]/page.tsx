@@ -1,25 +1,74 @@
+// app/sign-up/page.tsx
 "use client";
 
 import React, { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 const SignUp = () => {
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
+  const router = useRouter();
+  const [formData, setFormData] = useState({
+    givenName: "",
+    middleName: "",
+    lastName: "", 
+    email: "",
+    password: "",
+    confirmPassword: "",
+    phoneNumber: ""
+  });
   const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData(prev => ({
+      ...prev,
+      [e.target.name]: e.target.value
+    }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (password !== confirmPassword) {
+    setError("");
+    setIsLoading(true);
+
+    if (formData.password !== formData.confirmPassword) {
       setError("Passwords do not match");
+      setIsLoading(false);
       return;
     }
-    console.log("Form submitted:", { firstName, lastName, email, password });
+
+    try {
+      const res = await fetch('/api/signup', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: formData.email,
+          password: formData.password,
+          givenName: formData.givenName,
+          middleName: formData.middleName,
+          lastName: formData.lastName,
+          phoneNumber: formData.phoneNumber,
+        }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.error || 'Something went wrong');
+      }
+
+      // Redirect to login page on success
+      router.push('/sign-in');
+      
+    } catch (err: any) {
+      setError(err.message);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -47,24 +96,36 @@ const SignUp = () => {
           </div>
           
           <form onSubmit={handleSubmit} className="space-y-8">
-            {error && <p className="text-red-500 text-sm">{error}</p>}
+            {error && (
+              <p className="text-red-500 text-sm bg-red-50 p-3 rounded">{error}</p>
+            )}
             
             <div className="space-y-2">
               <label className="text-sm font-medium text-gray-700">NAME</label>
               <div className="flex gap-6">
                 <Input
-                  placeholder="First Name"
+                  placeholder="Given Name"
                   type="text"
-                  value={firstName}
-                  onChange={(e) => setFirstName(e.target.value)}
+                  name="givenName"
+                  value={formData.givenName}
+                  onChange={handleChange}
                   className="flex-1 rounded-lg border-gray-200 h-12"
                   required
                 />
                 <Input
+                  placeholder="Middle Name (Optional)"
+                  type="text"
+                  name="middleName"
+                  value={formData.middleName}
+                  onChange={handleChange}
+                  className="flex-1 rounded-lg border-gray-200 h-12"
+                />
+                <Input
                   placeholder="Last Name"
                   type="text"
-                  value={lastName}
-                  onChange={(e) => setLastName(e.target.value)}
+                  name="lastName"
+                  value={formData.lastName}
+                  onChange={handleChange}
                   className="flex-1 rounded-lg border-gray-200 h-12"
                   required
                 />
@@ -76,10 +137,23 @@ const SignUp = () => {
               <Input
                 placeholder="Enter your e-mail"
                 type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
                 className="w-full rounded-lg border-gray-200 h-12"
                 required
+              />
+            </div>
+
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-gray-700">PHONE NUMBER (Optional)</label>
+              <Input
+                placeholder="Enter your phone number"
+                type="tel"
+                name="phoneNumber"
+                value={formData.phoneNumber}
+                onChange={handleChange}
+                className="w-full rounded-lg border-gray-200 h-12"
               />
             </div>
             
@@ -88,8 +162,9 @@ const SignUp = () => {
               <Input
                 placeholder="Enter your password"
                 type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                name="password"
+                value={formData.password}
+                onChange={handleChange}
                 className="w-full rounded-lg border-gray-200 h-12"
                 required
               />
@@ -100,8 +175,9 @@ const SignUp = () => {
               <Input
                 placeholder="Confirm your password"
                 type="password"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
+                name="confirmPassword"
+                value={formData.confirmPassword}
+                onChange={handleChange}
                 className="w-full rounded-lg border-gray-200 h-12"
                 required
               />
@@ -110,8 +186,9 @@ const SignUp = () => {
             <Button 
               type="submit" 
               className="w-full bg-violet-600 hover:bg-violet-700 text-white py-6 rounded-lg text-lg font-medium"
+              disabled={isLoading}
             >
-              Sign Up
+              {isLoading ? "Creating account..." : "Sign Up"}
             </Button>
             
             <p className="text-center text-sm text-gray-600">

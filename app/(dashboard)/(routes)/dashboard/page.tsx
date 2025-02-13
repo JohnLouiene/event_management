@@ -28,10 +28,38 @@ const sampleEvents = [
     start_date: "2025-03-20",
     event_image: "/images/image_2.png",
   },
+  {
+    id: 4,
+    event_name: "Eh",
+    event_location: "New York, NY",
+    start_date: "2025-03-20",
+    event_image: "/images/image_2.png",
+  },
+  {
+    id: 5,
+    event_name: "Meh",
+    event_location: "New York, NY",
+    start_date: "2025-03-20",
+    event_image: "/images/image_2.png",
+  },
 ];
 
 const Dashboard = () => {
   const [showAllEvents, setShowAllEvents] = useState(false);
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  const nextSlide = () => {
+    if (currentIndex + 3 < sampleEvents.length) {
+      setCurrentIndex(currentIndex + 3);
+    }
+  };
+
+  const prevSlide = () => {
+    if (currentIndex - 3 >= 0) {
+      setCurrentIndex(currentIndex - 3);
+    }
+  };
+
   return (
     <div className="bg-white">
       {/* Hero Section */}
@@ -56,9 +84,9 @@ const Dashboard = () => {
       {/* Popular Events Section */}
       <section className="py-16 bg-black text-white">
         <div className="container mx-auto w-full max-w-6xl py-8 px-4">
-        <h2 className="text-3xl font-bold mb-8">Popular Events <span className="text-purple-600">Near You:</span></h2>
+          <h2 className="text-3xl font-bold mb-8">Popular Events <span className="text-purple-600">Near You:</span></h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {sampleEvents.map((event) => (
+            {sampleEvents.slice(0, 3).map((event) => (
               <Card
                 key={event.id}
                 className="shadow-md hover:shadow-xl transition-all"
@@ -89,50 +117,54 @@ const Dashboard = () => {
         </div>
 
         {showAllEvents && (
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8 px-8 py-4">
-            {sampleEvents.map((event) => (
-              <Card key={`all-${event.id}`} className="shadow-md">
-                <CardContent className="p-1">
-                  <img
-                    src={event.event_image}
-                    alt={event.event_name}
-                    className="w-full h-48 object-cover"
-                  />
-                  <div className="p-4">
-                    <h3 className="text-lg font-semibold text-gray-900">
-                      {event.event_name}
-                    </h3>
-                    <p className="text-gray-600">{event.event_location}</p>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
+          <div className="relative mt-8 px-8 py-4">
+            <div className="flex items-center space-x-4 overflow-hidden">
+              <Button onClick={prevSlide} disabled={currentIndex === 0} className="bg-gray-600">←</Button>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 flex-shrink-0 w-full">
+                {sampleEvents.slice(currentIndex, currentIndex + 3).map((event) => (
+                  <Card key={`all-${event.id}`} className="shadow-md">
+                    <CardContent className="p-1">
+                      <img
+                        src={event.event_image}
+                        alt={event.event_name}
+                        className="w-full h-48 object-cover"
+                      />
+                      <div className="p-4">
+                        <h3 className="text-lg font-semibold text-gray-900">
+                          {event.event_name}
+                        </h3>
+                        <p className="text-gray-600">{event.event_location}</p>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+              <Button onClick={nextSlide} disabled={currentIndex + 3 >= sampleEvents.length} className="bg-gray-600">→</Button>
+            </div>
           </div>
         )}
       </section>
 
       {/* About Us Section */}
-<section className="py-16 px-24 bg-white text-black">
-  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8 px-8 py-4">
-    <div className="relative">
-      <Image 
-        src="/images/icon_quotation_marks.png" 
-        alt="Quotation Marks" 
-        width={50} 
-        height={50} 
-        className="absolute -top-4 -left-8 md:-left-12"
-      />
-      <h2 className="text-3xl font-extrabold text-black ml-8">ABOUT US</h2>
-      <h3 className="text-5xl text-purple-600 font-extrabold mt-2 ml-8">ILOVATION</h3>
-    </div>
-    <p className="mt-4 text-gray-600 max-w-2xl">
-      Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-      eiusmod tempor incididunt ut labore et dolore magna aliqua.
-    </p>
-  </div>
-</section>
-
-
+      <section className="py-16 px-24 bg-white text-black">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8 px-8 py-4">
+          <div className="relative">
+            <Image 
+              src="/images/icon_quotation_marks.png" 
+              alt="Quotation Marks" 
+              width={50} 
+              height={50} 
+              className="absolute -top-4 -left-8 md:-left-12"
+            />
+            <h2 className="text-3xl font-extrabold text-black ml-8">ABOUT US</h2>
+            <h3 className="text-5xl text-purple-600 font-extrabold mt-2 ml-8">ILOVATION</h3>
+          </div>
+          <p className="mt-4 text-gray-600 max-w-2xl">
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+            eiusmod tempor incididunt ut labore et dolore magna aliqua.
+          </p>
+        </div>
+      </section>
     </div>
   );
 };
